@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Skimmer Security Training Portal / ATM 側錄器防詐內部培訓門戶</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+        }
+
+        /* 3D Card Flip Mechanics */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Hotspot Pulse Glow */
+        @keyframes ring-pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 14px rgba(225, 29, 72, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        .hotspot-pulse {
+            animation: ring-pulse 2s infinite ease-in-out;
+        }
+
+        /* Glass / Soft Contrast Card Styling */
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(79, 70, 229, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-slate-100/90 text-slate-800 min-h-screen flex flex-col selection:bg-violet-500 selection:text-white">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-gradient-to-r from-violet-950 via-indigo-900 to-slate-900 text-slate-100 text-xs py-2 px-4 font-semibold flex justify-between items-center shadow-sm">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div class="flex items-center space-x-2.5">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="topBarTag" class="tracking-wide">INTERNAL TRAINING MODULE • ATM FRAUD & HARDWARE TAMPERING AUDIT</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-4 text-[11px] text-violet-200">
+                <span id="topBarIso">Security Standard: ISO/IEC 27001 Certified</span>
+                <span>•</span>
+                <span id="topBarEdition">2026 Updated Field Edition</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo / Title -->
+            <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-rose-500 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/30">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="appTitle" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">ATM Skimmer Security Training</h1>
+                    <p id="appSubTitle" class="text-xs font-bold text-violet-600 uppercase tracking-wider">Internal Staff Hardware Inspection & Verification Portal</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls (Sound & Language) -->
+            <div class="flex items-center space-x-3">
+                <!-- Sound Toggle -->
+                <button id="soundBtn" onclick="toggleSound()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700 transition-all flex items-center space-x-2 shadow-sm">
+                    <span id="soundIcon" class="text-base">🔊</span>
+                    <span id="soundLabel" class="hidden sm:inline">Audio ON</span>
+                </button>
+
+                <!-- Language Toggle -->
+                <button id="langBtn" onclick="toggleLanguage()" class="px-4 py-2.5 rounded-xl border-2 border-indigo-600 bg-indigo-50 hover:bg-indigo-100 text-xs font-extrabold text-indigo-700 transition-all flex items-center space-x-2 shadow-sm">
+                    <svg class="w-4 h-4 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                    </svg>
+                    <span id="langLabel" class="tracking-wide">繁體中文</span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- PRIMARY NAVIGATION TABS -->
+        <div class="flex bg-white p-2 rounded-2xl space-x-2 border border-slate-200 card-shadow overflow-x-auto">
+            <button id="tab-flashcards" onclick="switchTab('flashcards')" class="flex-1 min-w-[170px] py-3.5 px-4 text-xs sm:text-sm font-extrabold rounded-xl transition-all bg-indigo-600 text-white shadow-md flex items-center justify-center space-x-2.5 whitespace-nowrap">
+                <span class="text-base">🎴</span>
+                <span id="tabLabelFlashcards">Skimmer Flashcards (6 Types)</span>
+            </button>
+            <button id="tab-inspector" onclick="switchTab('inspector')" class="flex-1 min-w-[170px] py-3.5 px-4 text-xs sm:text-sm font-extrabold rounded-xl transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center space-x-2.5 whitespace-nowrap">
+                <span class="text-base">🔍</span>
+                <span id="tabLabelInspector">Visual ATM Inspector</span>
+            </button>
+            <button id="tab-quiz" onclick="switchTab('quiz')" class="flex-1 min-w-[170px] py-3.5 px-4 text-xs sm:text-sm font-extrabold rounded-xl transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center space-x-2.5 whitespace-nowrap">
+                <span class="text-base">⚡</span>
+                <span id="tabLabelQuiz">10-Scenario Knowledge Exam</span>
+            </button>
+        </div>
+
+        <!-- SECTION 1: FLASHCARDS LIBRARY -->
+        <section id="sec-flashcards" class="space-y-6">
+            <!-- Filter & Help Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
+                <div class="flex flex-wrap items-center gap-2" id="filterBtnGroup">
+                    <span id="filterLabel" class="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">Filter:</span>
+                    <button onclick="window.filterCategory('all')" data-cat="all" class="filter-btn active px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-900 text-white transition-all shadow-sm">All Types (6)</button>
+                    <button onclick="window.filterCategory('reader')" data-cat="reader" class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Card Readers</button>
+                    <button onclick="window.filterCategory('keypad')" data-cat="keypad" class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">PIN Keypads</button>
+                    <button onclick="window.filterCategory('fascia')" data-cat="fascia" class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Cameras & Fascia</button>
+                    <button onclick="window.filterCategory('wireless')" data-cat="wireless" class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Wireless Wiretaps</button>
+                </div>
+                <div class="text-xs text-indigo-700 font-extrabold bg-indigo-50 px-3.5 py-2 rounded-xl border border-indigo-200 flex items-center space-x-1.5">
+                    <span>💡</span>
+                    <span id="flashcardHint">Click card to flip & inspect full SOP details</span>
+                </div>
+            </div>
+
+            <!-- Flashcards Grid -->
+            <div id="flashcardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Flashcards render dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 2: INTERACTIVE VISUAL INSPECTOR -->
+        <section id="sec-inspector" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left: Interactive Vector ATM Layout -->
+                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 card-shadow flex flex-col items-center justify-center">
+                    <div class="text-center mb-6">
+                        <span id="inspectorBadge" class="inline-block px-3 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-extrabold rounded-full mb-2">Interactive Inspection Diagram</span>
+                        <h3 id="inspectorHeaderTitle" class="text-xl font-extrabold text-slate-900">ATM Front Console Inspection Map</h3>
+                        <p id="inspectorHeaderSub" class="text-xs text-slate-500 mt-1">Click the numbered glowing hotspots to bring up specific inspection SOP instructions.</p>
+                    </div>
+
+                    <!-- Clean Graphic ATM Machine -->
+                    <div class="relative w-full max-w-sm bg-slate-200 rounded-3xl p-6 border-4 border-slate-300 shadow-2xl flex flex-col items-center space-y-5">
+                        
+                        <!-- Top Overhead Camera Bar (Hotspot 1) -->
+                        <div class="w-full h-16 bg-slate-800 rounded-2xl border-2 border-slate-700 relative flex items-center justify-between px-4 shadow-md">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3.5 h-3.5 rounded-full bg-emerald-400 border border-emerald-200 shadow-sm"></div>
+                                <span class="text-[10px] font-mono font-black text-slate-200">BANK SECURE ATM</span>
+                            </div>
+                            <div class="w-8 h-2 bg-slate-600 rounded-full"></div>
+                            
+                            <!-- Hotspot 1 -->
+                            <button onclick="window.inspectHotspot('overhead')" class="hotspot-pulse absolute -bottom-3 right-8 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-xl hover:scale-125 transition-transform z-20" title="Inspect Overhead Area">
+                                1
+                            </button>
+                        </div>
+
+                        <!-- ATM Screen & Side Fascia (Hotspot 2) -->
+                        <div class="w-full h-40 bg-gradient-to-b from-indigo-950 to-slate-900 border-4 border-slate-700 rounded-2xl p-3 flex flex-col justify-between items-center relative shadow-inner">
+                            <div class="w-full flex justify-between text-[10px] font-mono text-cyan-400">
+                                <span>SYSTEM ACTIVE</span>
+                                <span class="text-emerald-400">● 24H LOCK</span>
+                            </div>
+                            <div class="text-center space-y-1">
+                                <p id="screenPrompt" class="text-xs font-black text-white tracking-wide">PLEASE INSERT YOUR CARD</p>
+                                <p id="screenSubPrompt" class="text-[10px] text-cyan-300">Protect your PIN with hand shield</p>
+                            </div>
+                            <div class="w-full flex justify-between items-center px-2">
+                                <div class="w-10 h-1 bg-cyan-500/40 rounded"></div>
+                                <div class="w-10 h-1 bg-cyan-500/40 rounded"></div>
+                            </div>
+
+                            <!-- Hotspot 2 -->
+                            <button onclick="window.inspectHotspot('fascia')" class="hotspot-pulse absolute top-1/2 -left-3 -translate-y-1/2 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-xl hover:scale-125 transition-transform z-20" title="Inspect Fascia Trim">
+                                2
+                            </button>
+                        </div>
+
+                        <!-- Console Module (Card Reader, Keypad, Cash Slot) -->
+                        <div class="w-full bg-slate-300 rounded-2xl p-4 border-2 border-slate-400 grid grid-cols-2 gap-4 relative shadow-sm">
+                            
+                            <!-- Card Slot (Hotspot 3) -->
+                            <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex flex-col items-center justify-center relative h-32 shadow-inner">
+                                <span id="labelReaderSlot" class="text-[10px] text-slate-300 font-extrabold mb-2 uppercase">CARD SLOT</span>
+                                <div class="w-16 h-4 bg-emerald-500/30 border-2 border-emerald-400 rounded-md flex items-center justify-center shadow-md">
+                                    <div class="w-10 h-1 bg-emerald-400 rounded animate-pulse"></div>
+                                </div>
+                                <span class="text-[9px] text-emerald-400 font-mono mt-2">EMV CHIP / MAG</span>
+
+                                <!-- Hotspot 3 -->
+                                <button onclick="window.inspectHotspot('reader')" class="hotspot-pulse absolute -top-3 -right-3 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-xl hover:scale-125 transition-transform z-20" title="Inspect Reader Slot">
+                                    3
+                                </button>
+                            </div>
+
+                            <!-- Keypad (Hotspot 4) -->
+                            <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex flex-col items-center justify-center relative h-32 shadow-inner">
+                                <span id="labelKeypadSlot" class="text-[10px] text-slate-300 font-extrabold mb-2 uppercase">PIN KEYPAD</span>
+                                <div class="grid grid-cols-3 gap-1 bg-slate-900 p-1.5 rounded-lg border border-slate-700">
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                    <div class="w-3.5 h-3 bg-slate-400 rounded-xs"></div>
+                                </div>
+
+                                <!-- Hotspot 4 -->
+                                <button onclick="window.inspectHotspot('keypad')" class="hotspot-pulse absolute -top-3 -left-3 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-xl hover:scale-125 transition-transform z-20" title="Inspect Keypad">
+                                    4
+                                </button>
+                            </div>
+
+                            <!-- Cash Dispenser (Hotspot 5) -->
+                            <div class="col-span-2 bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between relative shadow-inner">
+                                <div>
+                                    <span id="labelCashSlot" class="text-[10px] text-slate-300 font-extrabold block">CASH DISPENSER TRAY</span>
+                                    <span id="labelCashSub" class="text-[9px] text-slate-400">Motorized Safety Door</span>
+                                </div>
+                                <div class="w-20 h-3 bg-slate-900 rounded border border-slate-600"></div>
+
+                                <!-- Hotspot 5 -->
+                                <button onclick="window.inspectHotspot('dispenser')" class="hotspot-pulse absolute -top-3 right-1/2 translate-x-1/2 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-xl hover:scale-125 transition-transform z-20" title="Inspect Dispenser">
+                                    5
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Inspector Finding Detail Panel -->
+                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 card-shadow space-y-5">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                        <div class="w-11 h-11 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold">
+                            🔍
+                        </div>
+                        <div>
+                            <h3 id="inspectorDetailTitle" class="text-lg font-black text-slate-900">Select an Inspection Hotspot</h3>
+                            <p id="inspectorDetailSub" class="text-xs text-slate-400 font-semibold">Standard Operating Procedure (SOP) & High-Risk Indicators</p>
+                        </div>
+                    </div>
+
+                    <div id="inspectorDetailBody" class="space-y-4 text-sm text-slate-700">
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-3">
+                            <span class="text-4xl block">👆</span>
+                            <p id="inspectorDefaultText" class="text-xs font-semibold text-slate-600">
+                                Click hotspots 1, 2, 3, 4, or 5 on the visual diagram to display specific physical inspection protocols and high-risk skimmer tactics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: 10-QUESTION KNOWLEDGE TEST -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <div class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 card-shadow space-y-6">
+                
+                <!-- Quiz Header & Progress Score Bar -->
+                <div class="space-y-4 border-b border-slate-100 pb-5">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <span id="quizBadge" class="px-3 py-1 bg-rose-100 text-rose-700 font-extrabold text-xs rounded-full inline-block mb-1">Internal Security Certification</span>
+                            <h3 id="quizTitle" class="text-2xl font-black text-slate-900">10-Scenario Hardware Tampering Exam</h3>
+                        </div>
+                        <div class="bg-slate-900 text-white px-5 py-2.5 rounded-2xl flex items-center space-x-3 shadow-md">
+                            <span id="quizScoreLabel" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Current Score</span>
+                            <span id="quizScoreVal" class="text-xl font-black text-emerald-400">0 / 10</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-1.5">
+                            <span id="quizProgressText">Question 1 of 10</span>
+                            <span id="quizPercentText">10%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                            <div id="quizProgressBar" class="h-full bg-gradient-to-r from-indigo-600 to-rose-500 w-[10%] transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Quiz Card -->
+                <div id="quizBox" class="space-y-6">
+                    <!-- Dynamic Question Content rendered via JS -->
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 bg-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
+            <div class="flex justify-center space-x-3 mb-2">
+                <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg font-mono font-bold">ATM CYBERSECURITY PORTAL</span>
+                <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg font-mono font-bold">INTERNAL AUDIT v2026</span>
+            </div>
+            <p id="footerDisclaimer">Banking Security & Physical ATM Hardware Defense Module • Strictly Confidential for Internal Authorized Staff</p>
+            <p id="footerSocNotice" class="text-slate-400">Report any suspicious ATM skimmer or hardware anomalies immediately to Security Operations Center (SOC).</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        // --- GLOBAL STATE ---
+        let currentLang = 'en'; // 'en' or 'zh'
+        let soundEnabled = true;
+        let activeCategory = 'all';
+        let currentQuizIndex = 0;
+        let score = 0;
+
+        // --- WEB AUDIO API SYNTHESIZER ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioContext = null;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioContext) audioContext = new AudioCtx();
+                if (audioContext.state === 'suspended') audioContext.resume();
+
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                const now = audioContext.currentTime;
+
+                if (type === 'flip') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.exponentialRampToValueAtTime(220, now + 0.1);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(260, now);
+                    osc.frequency.setValueAtTime(170, now + 0.12);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                }
+            } catch(e) {
+                console.log('Audio feedback fallback:', e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundLabel').textContent = soundEnabled 
+                ? (currentLang === 'en' ? 'Audio ON' : '音效 開') 
+                : (currentLang === 'en' ? 'Audio OFF' : '音效 關');
+        }
+
+        // --- DATA DICTIONARIES ---
+
+        // 1. FLASHCARDS DATA (6 CORE SKIMMER TYPES WITH VECTOR GRAPHICS)
+        const flashcardsData = [
+            {
+                id: 'bezel-skimmer',
+                category: 'reader',
+                badge: { en: 'High Threat', zh: '高威脅' },
+                badgeStyle: 'bg-rose-100 text-rose-700 border-rose-200',
+                title: {
+                    en: 'Overhead / Bezel Skimmer',
+                    zh: '覆蓋式刷卡頭竊密器 (Bezel Skimmer)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#1E293B"/>
+                        <!-- Real Bezel -->
+                        <rect x="70" y="30" width="100" height="60" rx="8" fill="#334155" stroke="#64748B" stroke-width="2"/>
+                        <rect x="85" y="55" width="70" height="10" rx="2" fill="#0F172A"/>
+                        <!-- Fake Bezel Overlay (Red Skimmer Overlay) -->
+                        <path d="M62 25 C62 20 178 20 178 25 L182 95 C182 98 175 100 170 100 L70 100 C65 100 58 98 58 95 Z" fill="#F43F5E" fill-opacity="0.25" stroke="#E11D48" stroke-width="2.5" stroke-dasharray="5 3"/>
+                        <rect x="80" y="52" width="80" height="16" rx="3" fill="#FFE4E6" stroke="#F43F5E" stroke-width="2"/>
+                        <line x1="88" y1="60" x2="152" y2="60" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Magnifying Indicator -->
+                        <circle cx="170" cy="40" r="14" fill="#FFE4E6" stroke="#E11D48" stroke-width="2"/>
+                        <text x="164" y="44" fill="#E11D48" font-size="12" font-weight="bold">⚠️</text>
+                        <!-- Labels -->
+                        <text x="120" y="112" text-anchor="middle" fill="#94A3B8" font-size="9" font-weight="bold">FAKE OVERLAY BEZEL MOUNTED OVER SLOT</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Molded fake plastic bezel mounted directly over genuine reader throat.',
+                    zh: '複製原廠刷卡口外觀之塑料外殼，直接貼合覆蓋於原廠讀卡機嘴上方。'
+                },
+                howItWorks: {
+                    en: 'Reads & logs magnetic stripe track data as customer inserts card.',
+                    zh: '當客戶將卡片插入時，讀取並記錄卡片磁條軌道數據。'
+                },
+                redFlags: {
+                    en: ['Protruding or loose bezel when wiggled', 'Glue or tape residue along edges', 'Dimmed or obscured LED light lens'],
+                    zh: ['刷卡嘴外觀異常凸出，用力拉扯時出現鬆動', '接縫邊緣有雙面膠或矽膠殘膠痕跡', '透光 LED 狀態指示燈亮度異常變暗']
+                },
+                sop: {
+                    en: ['Perform Wiggle Test: Pull card throat in all directions.', 'Check LED lens clarity.'],
+                    zh: ['執行搖晃測試 (Wiggle Test)：用力拉扯並搖晃讀卡嘴。', '檢視透明護罩透光度與邊框合縫。']
+                }
+            },
+            {
+                id: 'deep-insert-shimmer',
+                category: 'reader',
+                badge: { en: 'Critical Threat', zh: '極高威脅' },
+                badgeStyle: 'bg-purple-100 text-purple-700 border-purple-200',
+                title: {
+                    en: 'Deep Insert Skimmer / Shimmer',
+                    zh: '內置式薄片竊密器 / 閃壓器 (Shimmer)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#0F172A"/>
+                        <!-- Reader Throat Cross-section -->
+                        <rect x="30" y="35" width="180" height="50" rx="4" fill="#1E293B" stroke="#475569" stroke-width="2"/>
+                        <!-- Internal Card Track -->
+                        <line x1="40" y1="60" x2="200" y2="60" stroke="#334155" stroke-width="8"/>
+                        <!-- Shimmer Micro Flexible PCB -->
+                        <path d="M70 56 L150 56 L155 64 L65 64 Z" fill="#A855F7" stroke="#C084FC" stroke-width="1.5"/>
+                        <circle cx="110" cy="60" r="3" fill="#F0ABFC"/>
+                        <circle cx="125" cy="60" r="3" fill="#F0ABFC"/>
+                        <!-- EMV Chip Contact Area -->
+                        <rect x="100" y="44" width="35" height="10" rx="1" fill="#E9D5FF" stroke="#A855F7" stroke-width="1.5"/>
+                        <text x="117.5" y="52" text-anchor="middle" fill="#6B21A8" font-size="7" font-weight="bold">EMV CHIP TAP</text>
+                        <text x="120" y="100" text-anchor="middle" fill="#A855F7" font-size="9" font-weight="bold">ULTRA-THIN PCB HIDDEN INSIDE READER THROAT</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Ultra-thin flexible metal PCB inserted deep inside the internal card reader throat.',
+                    zh: '超薄型金屬柔性電路板，隱蔽藏匿於讀卡機內部深處。'
+                },
+                howItWorks: {
+                    en: 'Sniffs EMV chip micro-contacts without altering external machine appearance.',
+                    zh: '在完全不改變 ATM 外觀情況下，靜態擷取 EMV 晶片接點數據。'
+                },
+                redFlags: {
+                    en: ['Card binds or feels strong physical resistance during insertion', 'Motorized reader motor noise'],
+                    zh: ['插卡時感受異常顯著阻力', '退卡時卡片卡頓無法順暢吐出', '讀卡機內部發出異常沉重運轉聲']
+                },
+                sop: {
+                    en: ['Insert standard gauge test card to check clearance.', 'Inspect internal slot with scope during audit.'],
+                    zh: ['使用標準測試卡進行插拔順暢度測試。', '維護時使用專用內視鏡稽核讀卡口內部狀態。']
+                }
+            },
+            {
+                id: 'overlay-keypad',
+                category: 'keypad',
+                badge: { en: 'High Threat', zh: '高威脅' },
+                badgeStyle: 'bg-amber-100 text-amber-700 border-amber-200',
+                title: {
+                    en: 'Overlay Keypad / Fake PIN Pad',
+                    zh: '假鍵盤 / 覆蓋式密碼鍵盤 (Overlay Keypad)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#1E293B"/>
+                        <!-- Real EPP Keypad Base -->
+                        <rect x="70" y="25" width="100" height="70" rx="6" fill="#475569" stroke="#94A3B8" stroke-width="2"/>
+                        <!-- Fake Keypad Layer Offset -->
+                        <rect x="66" y="21" width="100" height="70" rx="6" fill="#F59E0B" fill-opacity="0.2" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4 2"/>
+                        <!-- Grid Keys -->
+                        <g fill="#CBD5E1">
+                            <rect x="76" y="30" width="20" height="12" rx="2"/><rect x="102" y="30" width="20" height="12" rx="2"/><rect x="128" y="30" width="20" height="12" rx="2"/>
+                            <rect x="76" y="48" width="20" height="12" rx="2"/><rect x="102" y="48" width="20" height="12" rx="2"/><rect x="128" y="48" width="20" height="12" rx="2"/>
+                            <rect x="76" y="66" width="20" height="12" rx="2"/><rect x="102" y="66" width="20" height="12" rx="2"/><rect x="128" y="66" width="20" height="12" rx="2"/>
+                        </g>
+                        <path d="M166 21 L185 10 M185 10 L195 10" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                        <text x="198" y="13" fill="#F59E0B" font-size="8" font-weight="bold">DOUBLE TAPE</text>
+                        <text x="120" y="108" text-anchor="middle" fill="#FBBF24" font-size="9" font-weight="bold">FALSE OVERLAY KEYBOARD ON TOP OF REAL EPP</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Fake key overlay fitted over real Encrypted PIN Pad (EPP).',
+                    zh: '精準重疊黏貼於原廠加密密碼鍵盤 (EPP) 上方之偽造鍵盤。'
+                },
+                howItWorks: {
+                    en: 'Logs numeric PIN keystrokes digitally or transmits via Bluetooth.',
+                    zh: '紀錄客戶輸入之 PIN 密碼，或經由微型藍芽晶片即時無線傳輸密碼。'
+                },
+                redFlags: {
+                    en: ['Keypad feels spongy, raised, or thick', 'Edges flush with fascia instead of inset', 'Soft plastic key feel'],
+                    zh: ['鍵盤按壓按感軟綿、過厚凸起', '鍵盤邊框與面板平齊（原廠為深嵌凹入）', '按鍵欠缺金屬喀噠硬質回饋感']
+                },
+                sop: {
+                    en: ['Fingernail Pry Test: Attempt to pry edges.', 'Verify metallic click feedback on keypress.'],
+                    zh: ['摳壓測試：以指甲試摳鍵盤四周，檢查有無雙面膠。', '確認按壓數字鍵時有明確金屬段落回饋。']
+                }
+            },
+            {
+                id: 'pinhole-camera',
+                category: 'fascia',
+                badge: { en: 'High Threat', zh: '高威脅' },
+                badgeStyle: 'bg-cyan-100 text-cyan-700 border-cyan-200',
+                title: {
+                    en: 'Pinhole Camera / False Panel',
+                    zh: '針孔攝影機 / 假面板 (Pinhole Camera)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#0F172A"/>
+                        <!-- Overhead Trim Panel -->
+                        <rect x="30" y="20" width="180" height="30" rx="6" fill="#1E293B" stroke="#334155" stroke-width="2"/>
+                        <!-- Micro Pinhole Lens -->
+                        <circle cx="120" cy="35" r="4" fill="#06B6D4" stroke="#0891B2" stroke-width="2"/>
+                        <circle cx="120" cy="35" r="1.5" fill="#ECFEFF"/>
+                        <!-- Ray Cone aiming down at PIN Pad -->
+                        <path d="M120 37 L70 95 L170 95 Z" fill="#06B6D4" fill-opacity="0.15" stroke="#06B6D4" stroke-width="1" stroke-dasharray="3 3"/>
+                        <!-- PIN Pad Target -->
+                        <rect x="85" y="90" width="70" height="12" rx="2" fill="#334155" stroke="#64748B"/>
+                        <text x="120" y="99" text-anchor="middle" fill="#94A3B8" font-size="7" font-weight="bold">PIN PAD</text>
+                        <text x="120" y="113" text-anchor="middle" fill="#22D3EE" font-size="9" font-weight="bold">CONCEALED CAMERA RECORDING PIN KEYPRESSES</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Micro video camera concealed in overhead panels or fake brochure holders.',
+                    zh: '藏匿於頂部燈罩、假護板或螢幕旁宣傳單盒內之微型鏡頭。'
+                },
+                howItWorks: {
+                    en: 'Records video of customer PIN entry to pair with stolen card data.',
+                    zh: '全程錄下客戶按壓 PIN 碼過程，用以與側錄所得之卡片資料配對。'
+                },
+                redFlags: {
+                    en: ['Microscopic pinhole hole on overhead trim', 'Unusual brochure holder added near screen', 'Loose light bar diffuser lens'],
+                    zh: ['鍵盤上方塑料護板有微小針孔洞', '螢幕旁突兀新增非原廠宣傳單放置盒', '頂部燈罩邊緣鬆動或厚度變厚']
+                },
+                sop: {
+                    en: ['Flashlight Angled Sweep: Shine flashlight to spot micro lens reflection.', 'Inspect top panel lip.'],
+                    zh: ['斜角強光測試：持手電筒照射頂護罩，觀察鏡頭玻璃反光。', '摸拭頂護罩下緣是否有下凹小孔。']
+                }
+            },
+            {
+                id: 'fake-fascia',
+                category: 'fascia',
+                badge: { en: 'Critical Threat', zh: '極高威脅' },
+                badgeStyle: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+                title: {
+                    en: 'Fake Fascia / Entire Front Cover',
+                    zh: '假機身 / 假 ATM 前板 (Fake Fascia)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#0F172A"/>
+                        <!-- Inner Genuine ATM Shell -->
+                        <rect x="50" y="20" width="140" height="85" rx="8" fill="#1E293B" stroke="#475569" stroke-width="2"/>
+                        <!-- Outer Fake Fascia Envelope Shell -->
+                        <rect x="42" y="14" width="156" height="95" rx="10" fill="#6366F1" fill-opacity="0.15" stroke="#6366F1" stroke-width="2.5" stroke-dasharray="6 3"/>
+                        <rect x="70" y="30" width="100" height="30" rx="4" fill="#312E81" stroke="#4338CA"/>
+                        <circle cx="170" cy="75" r="8" fill="#818CF8"/>
+                        <text x="120" y="114" text-anchor="middle" fill="#818CF8" font-size="9" font-weight="bold">ENTIRE FRAUDULENT FRONT SHELL CLIPPED OVER REAL ATM</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Complete fraudulent shell placed directly over genuine front panel.',
+                    zh: '整個覆蓋安裝於原廠 ATM 前端外殼上方之假面罩模組。'
+                },
+                howItWorks: {
+                    en: 'Houses internal skimmer, key logger, and battery storage inside hollow shell.',
+                    zh: '於外殼內部空腔整合側錄頭、側錄鍵盤與電池組。'
+                },
+                redFlags: {
+                    en: ['Whole front panel flexes or feels hollow', 'Misaligned physical keyholes', 'Bulky dimension overall'],
+                    zh: ['整體前側面板按壓時空洞彈跳', '實體鑰匙鎖孔位未精準對齊', '機台外形維度明顯異常笨重']
+                },
+                sop: {
+                    en: ['Corner Pressure Audit: Push on shell outer edges.', 'Verify keyhole alignment.'],
+                    zh: ['四角施壓稽核：用力推壓外殼四角邊緣。', '檢查鎖孔是否完全精準對齊。']
+                }
+            },
+            {
+                id: 'wireless-wiretap',
+                category: 'wireless',
+                badge: { en: 'High Threat', zh: '高威脅' },
+                badgeStyle: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                title: {
+                    en: 'Wireless / Bluetooth Wiretap',
+                    zh: '無線藍芽傳輸竊密模組 (Wireless Wiretap)'
+                },
+                svgIcon: `
+                    <svg class="w-full h-36" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="220" height="100" rx="12" fill="#0F172A"/>
+                        <!-- Transmitter Box -->
+                        <rect x="40" y="35" width="50" height="50" rx="6" fill="#065F46" stroke="#10B981" stroke-width="2"/>
+                        <path d="M60 50 L70 60 L50 70" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- Radio Waves Broadcast -->
+                        <path d="M100 45 A25 25 0 0 1 100 75" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <path d="M112 37 A40 40 0 0 1 112 83" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <path d="M124 29 A55 55 0 0 1 124 91" stroke="#6EE7B7" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <!-- Receiver Device -->
+                        <rect x="160" y="40" width="40" height="60" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="2"/>
+                        <rect x="168" y="48" width="24" height="30" rx="2" fill="#10B981" fill-opacity="0.3"/>
+                        <text x="120" y="112" text-anchor="middle" fill="#34D399" font-size="9" font-weight="bold">BLUETOOTH / WI-FI BROADCASTING STOLEN TRACK DATA</text>
+                    </svg>
+                `,
+                whatIsIt: {
+                    en: 'Transceiver module integrated with skimmer to broadcast stolen data.',
+                    zh: '整合於側錄器內部之無線廣播模組，遠端發送資料。'
+                },
+                howItWorks: {
+                    en: 'Transmits stolen magnetic card track data over Bluetooth/Wi-Fi to nearby criminals.',
+                    zh: '將側錄所得之磁條數據經由藍芽/Wi-Fi 無線傳輸給周邊車輛內歹徒。'
+                },
+                redFlags: {
+                    en: ['Unidentified Bluetooth devices detected (e.g. HC-05, ESP32)', 'Signal spikes near ATM'],
+                    zh: ['周圍搜尋到未認證藍牙廣播裝置（如 HC-05, ESP32）', '靠近 ATM 時訊號強度異常飆升']
+                },
+                sop: {
+                    en: ['Perform Bluetooth signal sweep during inspection.', 'Verify signal source.'],
+                    zh: ['巡檢時使用藍牙訊號 App 掃描機台周邊強訊號。', '比對機台內部有無附加無線模組。']
+                }
+            }
+        ];
+
+        // 2. INSPECTOR HOTSPOT DETAILS
+        const inspectorHotspots = {
+            overhead: {
+                title: { en: 'Hotspot 1: Overhead Lighting Bar & Roof', zh: '熱點 1：頂部照明燈罩與頂護板區' },
+                html: {
+                    en: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ High Risk: Hidden Pinhole Camera</span>
+                                <p class="text-xs text-slate-700">Micro-cameras concealed inside fake plastic light diffusers aiming at keypad to record customer PINs.</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">Inspection SOP Protocol:</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>Tactile Lip Check:</strong> Run fingers along underside rim to detect pinhole drilling.</li>
+                                <li><strong>Flashlight Reflection:</strong> Shine light at a 45° angle to detect camera glass lens reflections.</li>
+                            </ul>
+                        </div>
+                    `,
+                    zh: `
+                        <div class="space-y-3">
+                        <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                            <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ 高風險威脅：覆蓋式假密碼鍵盤與熱感應側錄</span>
+                            <p class="text-xs text-slate-700">重疊貼合於原廠 EPP 鍵盤上方之假鍵盤，記錄密碼輸入。</p>
+                        </div>
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase">實體巡檢 SOP 步驟：</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>觸覺摸拭檢查：</strong> 用手指沿頂罩下緣撫摸，檢查有無不平整小孔。</li>
+                                <li><strong>斜角反光測試：</strong> 持手電筒以 45 度斜角照射，觀察有無鏡頭玻璃反光。</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            },
+            fascia: {
+                title: { en: 'Hotspot 2: Screen Bezel & Side Panels', zh: '熱點 2：螢幕邊框與飾條區' },
+                html: {
+                    en: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ High Risk: Fake Brochure Holder & Overlay Shell</span>
+                                <p class="text-xs text-slate-700">Add-on plastic leaflet boxes containing concealed batteries, transmitters, or cameras.</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">Inspection SOP Protocol:</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>Brochure Box Audit:</strong> Ensure no non-standard brochure boxes are taped near screen sides.</li>
+                                <li><strong>Corner Pressure:</strong> Push outer panel edges to check for double-sided tape movement.</li>
+                            </ul>
+                        </div>
+                    `,
+                    zh: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ 高風險威脅：假宣傳單盒與覆蓋假外殼</span>
+                                <p class="text-xs text-slate-700">螢幕旁新增之宣傳單架，內部藏匿電池、針孔鏡頭與無線發射模組。</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">實體巡檢 SOP 步驟：</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>宣傳單架查核：</strong> 確認螢幕兩側無突兀黏貼之非原廠宣傳單架。</li>
+                                <li><strong>邊角施壓：</strong> 按壓面板邊角，檢查有無雙面膠黏貼彈跳感。</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            },
+            reader: {
+                title: { en: 'Hotspot 3: Card Reader Throat', zh: '熱點 3：讀卡機插槽區' },
+                html: {
+                    en: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ High Risk: Bezel Skimmers & Deep Insert Shimmers</span>
+                                <p class="text-xs text-slate-700">Highest risk area. External overlay bezels capture magstripes; internal shimmers tap EMV chips.</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">Inspection SOP Protocol:</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>Wiggle Test:</strong> Vigorously pull and shake throat piece with fingers. Factory throats do NOT move.</li>
+                                <li><strong>Card Resistance:</strong> Insert standard gauge card to test for internal metallic resistance.</li>
+                            </ul>
+                        </div>
+                    `,
+                    zh: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ 高風險威脅：外置側錄頭與內置 Shimmer</span>
+                                <p class="text-xs text-slate-700">受攻擊風險最高區域。外置假護罩擷取磁條，內部 Shimmer 竊取晶片數據。</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">實體巡檢 SOP 步驟：</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>搖晃測試 (Wiggle Test)：</strong> 兩指緊握讀卡嘴外罩用力拉扯。原廠讀卡嘴絕不晃動。</li>
+                                <li><strong>阻力測試：</strong> 使用標準測試卡插入卡槽，測試內部有無微型板件造成阻力。</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            },
+            keypad: {
+                title: { en: 'Hotspot 4: Encrypted PIN Pad (EPP)', zh: '熱點 4：加密密碼鍵盤 (EPP) 區' },
+                html: {
+                    en: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ High Risk: Overlay Membrane Keypads & Thermal PIN Theft</span>
+                                <p class="text-xs text-slate-700">False keyboard layered over EPP to record keystrokes directly.</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">Inspection SOP Protocol:</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>Fingernail Pry Test:</strong> Attempt to pry edges with fingernail to spot tape layers.</li>
+                                <li><strong>Tactile Click:</strong> Verify crisp metallic click feedback when pressing key numbers.</li>
+                            </ul>
+                        </div>
+                    `,
+                    zh: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ 高風險威脅：覆蓋式假密碼鍵盤與熱感應側錄</span>
+                                <p class="text-xs text-slate-700">重疊貼合於原廠 EPP 鍵盤上方之假鍵盤，記錄密碼輸入。</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">實體巡檢 SOP 步驟：</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>指甲摳壓測試：</strong> 以指甲試摳鍵盤四周縫隙，檢查有無雙面膠。</li>
+                                <li><strong>金屬觸感確認：</strong> 按壓數字鍵，確認有明確的金屬喀噠聲音與段落反饋。</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            },
+            dispenser: {
+                title: { en: 'Hotspot 5: Cash Dispenser Shutter', zh: '熱點 5：出鈔口遮罩區' },
+                html: {
+                    en: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ High Risk: Cash Trapping Plates</span>
+                                <p class="text-xs text-slate-700">False shutter plates glued over cash opening with adhesive inside to snare dispensed cash.</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">Inspection SOP Protocol:</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>Spring Nudge Test:</strong> Manually nudge cash door; it should spring back smoothly without sticky friction.</li>
+                                <li><strong>Glue Margin Check:</strong> Inspect slot frame edges for tape or silicon glue residue.</li>
+                            </ul>
+                        </div>
+                    `,
+                    zh: `
+                        <div class="space-y-3">
+                            <div class="p-3 bg-rose-50 rounded-xl border border-rose-200">
+                                <span class="text-xs font-bold text-rose-700 block mb-1">⚠️ 高風險威脅：出鈔口攔截器 (Cash Trap)</span>
+                                <p class="text-xs text-slate-700">覆蓋於出鈔口上方之假吐鈔門，內藏黏膠用以扣押吐出之鈔票。</p>
+                            </div>
+                            <h4 class="text-xs font-extrabold text-slate-900 uppercase">實體巡檢 SOP 步驟：</h4>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li><strong>彈性推拉測試：</strong> 輕推吐鈔口門檔，確認能順暢開啟並自動彈回閉合。</li>
+                                <li><strong>邊框膠痕檢查：</strong> 檢查吐鈔口外框邊緣有無雙面膠或矽膠溢痕。</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            }
+        };
+
+        // 3. COMPREHENSIVE 10-QUESTION QUIZ DATA
+        const quizQuestions = [
+            {
+                id: 1,
+                title: { en: 'Scenario 1: Card Reader Throat Wiggle Audit', zh: '情境 1：讀卡嘴實體搖晃稽核' },
+                desc: {
+                    en: 'During routine branch inspection, you perform the Wiggle Test on the card reader throat bezel. The throat piece shifts 2mm sideways and reveals faint double-sided tape residue along the edge. Assessment?',
+                    zh: '日常巡檢中，您對讀卡嘴執行搖晃測試 (Wiggle Test)。讀卡嘴外罩可微幅滑動，且縫隙邊緣露出些許雙面膠殘膠痕跡。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! Original factory reader throats are bolted securely from inside the chassis. Any movement or tape residue indicates an Overlay Bezel Skimmer.',
+                    zh: '遭到篡改 (Compromised)！原廠讀卡嘴係由內部鋼構鎖固，絕不移位且不可能有膠帶痕跡。此為「外置覆蓋型刷卡頭」。'
+                }
+            },
+            {
+                id: 2,
+                title: { en: 'Scenario 2: Card Slot Mechanical Friction', zh: '情境 2：插卡內部劇烈機械阻力' },
+                desc: {
+                    en: 'The card slot housing appears perfectly normal externally. However, inserting a test card creates heavy physical friction, and ejecting the card stutters noticeably. Assessment?',
+                    zh: '讀卡口外觀完全無異狀。然而插入測試卡時感受劇烈摩擦阻力，退卡時出現明顯卡頓停手。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! Heavy card friction with no external change is the hallmark sign of a Deep Insert Skimmer (Shimmer) lodged inside the reader throat.',
+                    zh: '遭到篡改 (Compromised)！外觀無變動但內部阻力劇增，此為讀卡嘴深處遭植入「內置深層閃靈器 (Shimmer)」之典型徵兆。'
+                }
+            },
+            {
+                id: 3,
+                title: { en: 'Scenario 3: Encrypted PIN Pad (EPP) Tactile Check', zh: '情境 3：密碼鍵盤觸感與邊框驗證' },
+                desc: {
+                    en: 'Pressing the numeric keys gives a sharp, crisp metallic click. The stainless steel pad border is deeply inset into the metal console frame without overhangs. Assessment?',
+                    zh: '按壓數字密碼鍵盤時，發出清晰堅韌的金屬喀噠聲，且不銹鋼鍵盤邊緣深嵌於控制台金屬凹槽內。您的判斷為何？'
+                },
+                isCompromised: false,
+                explanation: {
+                    en: 'GENUINE! Crisp metallic feedback and inset border geometry are standard factory characteristics of an authentic Encrypted PIN Pad (EPP).',
+                    zh: '正常原廠 (Genuine)！明確之金屬回饋段落感與凹入式防護邊框，為原廠加密密碼鍵盤 (EPP) 的標準特徵。'
+                }
+            },
+            {
+                id: 4,
+                title: { en: 'Scenario 4: Overhead Light Bar Inspection', zh: '情境 4：頂部燈罩斜角光照檢查' },
+                desc: {
+                    en: 'Shining a flashlight across the plastic light bar above the screen reveals a micro 1mm hole with a glass lens reflection directed at the keypad. Assessment?',
+                    zh: '持手電筒照射螢幕上方塑膠燈罩時，發現一個 1 釐米個人人工微孔，且背後有微弱之玻璃鏡頭反光對準鍵盤。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! A micro-hole with a glass lens reflection indicates a concealed pinhole camera deployed to capture customer PIN entries.',
+                    zh: '遭到篡改 (Compromised)！燈罩微孔後的玻璃反光即為隱蔽式「針孔攝影機」，專門用於偷拍客戶 PIN 碼。'
+                }
+            },
+            {
+                id: 5,
+                title: { en: 'Scenario 5: Screen-side Brochure Box Check', zh: '情境 5：螢幕旁宣傳單架檢驗' },
+                desc: {
+                    en: 'An acrylic leaflet box is glued beside the screen. Prying the box reveals a tiny circuit board and battery taped to its underside facing the keypad. Assessment?',
+                    zh: '螢幕旁黏貼了一盒宣傳單架。輕摳時發現背板底部藏有一塊微型電路板與電池，鏡頭對準鍵盤。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! Fraudsters routinely use fake brochure holders to disguise batteries and video pinhole cameras.',
+                    zh: '遭到篡改 (Compromised)！歹徒常利用假宣傳單架作為偽裝，內部藏匿針孔鏡頭與電池。'
+                }
+            },
+            {
+                id: 6,
+                title: { en: 'Scenario 6: Entire Front Fascia Displacement', zh: '情境 6：整體 ATM 前面板結構檢查' },
+                desc: {
+                    en: 'Pressing firmly on the outer corners of the front fascia causes the entire outer panel shell to flex and spring back with a hollow sound. Assessment?',
+                    zh: '用力推壓 ATM 前面板四角時，整個外殼出現明顯彈性空洞位移，發出空心按壓聲。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! Hollow shell flex indicates a complete Fake Fascia fitted over the genuine ATM panel.',
+                    zh: '遭到篡改 (Compromised)！外殼空洞位移代表整個機身覆蓋了「假 ATM 前板 (Fake Fascia)」。'
+                }
+            },
+            {
+                id: 7,
+                title: { en: 'Scenario 7: Ambient Bluetooth Signal Audit', zh: '情境 7：周邊無線藍芽訊號稽核' },
+                desc: {
+                    en: 'Standing in front of an isolated lobby ATM, your signal app detects an unencrypted Bluetooth broadcast named "HC-05-SKIM" at -35dBm near the reader slot. Assessment?',
+                    zh: '站在獨立 ATM 前，您的訊號分析 App 偵測到名為 "HC-05-SKIM" 的強烈未加密藍牙訊號，靠近讀卡嘴時訊號飆升。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! High RF signal strength near the card slot broadcasting generic module names (e.g., HC-05) indicates a Wireless Bluetooth Skimmer.',
+                    zh: '遭到篡改 (Compromised)！靠近讀卡嘴出現強烈藍牙模組訊號，代表該機台整合了「無線藍牙傳輸模組」。'
+                }
+            },
+            {
+                id: 8,
+                title: { en: 'Scenario 8: Cash Dispenser Shutter Inspection', zh: '情境 8：吐鈔口門檔彈性檢驗' },
+                desc: {
+                    en: 'Nudging the cash dispenser door opens it smoothly against spring tension, and it snaps shut completely without sticky residue. Assessment?',
+                    zh: '手動推動吐鈔口門檔時，門檔於彈簧抗力下順暢開啟，手鬆開後迅速完全閉合，無任何膠痕。您的判斷為何？'
+                },
+                isCompromised: false,
+                explanation: {
+                    en: 'GENUINE! Smooth spring movement and clean seals indicate a normal, tamper-free cash dispenser shutter assembly.',
+                    zh: '正常原廠 (Genuine)！開合自如之彈性門檔與潔淨邊框，代表吐鈔口結構正常，未遭植入攔截器 (Cash Trap)。'
+                }
+            },
+            {
+                id: 9,
+                title: { en: 'Scenario 9: False Cash Dispenser Cover Plate', zh: '情境 9：吐鈔口假蓋板與黏膠' },
+                desc: {
+                    en: 'A customer reports cash was debited but withheld. Inspected shutter door feels glued solid, and double-sided foam tape is visible along the inner rim. Assessment?',
+                    zh: '客戶反映已扣款但未吐鈔。現場稽核時吐鈔門遭黏死無法彈開，內邊緣可見強效雙面泡棉膠。您的判斷為何？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'COMPROMISED! A glued false shutter plate with internal double-sided tape is a Cash Trap device designed to physically snare banknotes.',
+                    zh: '遭到篡改 (Compromised)！黏死之假門與雙面膠為典型的「出鈔口攔截器 (Cash Trap)」，專門扣押現金。'
+                }
+            },
+            {
+                id: 10,
+                title: { en: 'Scenario 10: Thermal Keypad PIN Theft Audit', zh: '情境 10：塑膠鍵盤熱感應密碼竊取漏洞' },
+                desc: {
+                    en: 'An ATM features a smooth plastic keypad instead of stainless steel. Immediately after key entry, a thermal camera can highlight button press sequence by residual body heat. Assessment?',
+                    zh: 'ATM 採用平滑塑膠鍵盤而非金屬鍵盤。客戶輸入密碼離去後，熱感應鏡頭可經由殘留體溫讀出按鍵順序。此結構安全評估？'
+                },
+                isCompromised: true,
+                explanation: {
+                    en: 'HIGH RISK / VULNERABLE! Plastic keypads retain residual thermal heat signatures enabling Thermal PIN Theft. Metal EPP pads dissipate heat rapidly to prevent this.',
+                    zh: '存在重大安全漏洞 (High Risk)！塑膠鍵盤會殘留體溫，導致歹徒可用熱感應鏡頭竊取密碼。原廠不銹鋼 EPP 鍵盤能迅速散熱防範此攻擊。'
+                }
+            }
+        ];
+
+        // --- RENDER FUNCTIONS ---
+
+        // Render Flashcards Grid
+        function renderFlashcards() {
+            const grid = document.getElementById('flashcardsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const filtered = activeCategory === 'all' 
+                ? flashcardsData 
+                : flashcardsData.filter(c => c.category === activeCategory);
+
+            filtered.forEach(card => {
+                const title = card.title[currentLang];
+                const badge = card.badge[currentLang];
+                const what = card.whatIsIt[currentLang];
+                const how = card.howItWorks[currentLang];
+                const redFlags = card.redFlags[currentLang];
+                const sop = card.sop[currentLang];
+
+                const cardHtml = `
+                    <div class="h-[460px] perspective-1000 cursor-pointer" onclick="window.flipFlashcard(this)">
+                        <div class="card-inner w-full h-full relative transform-style-3d transition-transform duration-500 rounded-3xl border border-slate-200/80 bg-white card-shadow hover:border-indigo-300">
+                            
+                            <!-- FRONT OF CARD -->
+                            <div class="card-front absolute inset-0 backface-hidden p-5 flex flex-col justify-between bg-gradient-to-b from-white via-slate-50/50 to-slate-100 rounded-3xl">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="px-3 py-1 text-[10px] font-extrabold rounded-full border ${card.badgeStyle} uppercase">
+                                            ${badge}
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-mono font-bold">ID: ${card.id}</span>
+                                    </div>
+
+                                    <div class="my-2 p-2 bg-slate-900 rounded-2xl border border-slate-800 shadow-inner flex items-center justify-center">
+                                        ${card.svgIcon}
+                                    </div>
+
+                                    <h4 class="text-base font-extrabold text-slate-900 text-center mb-1.5 leading-snug">${title}</h4>
+                                    <p class="text-xs text-slate-600 text-center leading-relaxed font-medium">${what}</p>
+                                </div>
+
+                                <div class="pt-2 border-t border-slate-200/80 flex items-center justify-center text-xs text-indigo-600 font-extrabold space-x-1">
+                                    <span>👆 ${currentLang === 'en' ? 'Click to Flip for SOP Inspection' : '點擊翻面檢視完整 SOP'}</span>
+                                </div>
+                            </div>
+
+                            <!-- BACK OF CARD -->
+                            <div class="card-back absolute inset-0 backface-hidden rotate-y-180 p-5 flex flex-col justify-between bg-white rounded-3xl overflow-y-auto border-2 border-indigo-200 card-shadow">
+                                <div class="space-y-3">
+                                    <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
+                                        <h5 class="text-xs font-black text-indigo-700 uppercase">${title}</h5>
+                                        <span class="text-[9px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">SOP AUDIT</span>
+                                    </div>
+
+                                    <!-- How it works -->
+                                    <div>
+                                        <span class="text-[10px] font-extrabold text-rose-700 uppercase block">${currentLang === 'en' ? '⚙️ How It Operates' : '⚙️ 運作原理'}</span>
+                                        <p class="text-[11px] text-slate-700 mt-0.5 font-medium leading-snug">${how}</p>
+                                    </div>
+
+                                    <!-- Red Flags -->
+                                    <div>
+                                        <span class="text-[10px] font-extrabold text-amber-700 uppercase block">${currentLang === 'en' ? '🚩 Visual / Physical Red Flags' : '🚩 外觀與硬體異常徵兆'}</span>
+                                        <ul class="list-disc list-inside text-[11px] text-slate-700 mt-0.5 space-y-0.5 font-medium">
+                                            ${redFlags.map(rf => `<li>${rf}</li>`).join('')}
+                                        </ul>
+                                    </div>
+
+                                    <!-- Inspection Routine -->
+                                    <div>
+                                        <span class="text-[10px] font-extrabold text-emerald-700 uppercase block">${currentLang === 'en' ? '🔍 Daily Inspection SOP' : '🔍 每日實體檢查 SOP'}</span>
+                                        <ul class="list-disc list-inside text-[11px] text-slate-700 mt-0.5 space-y-0.5 font-medium">
+                                            ${sop.map(s => `<li>${s}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-t border-slate-100 text-center">
+                                    <span class="text-[10px] text-slate-400 font-bold">${currentLang === 'en' ? 'Click again to return' : '再次點擊可返回正面'}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        function flipFlashcard(container) {
+            playSound('flip');
+            const inner = container.querySelector('.card-inner');
+            if (inner) inner.classList.toggle('rotate-y-180');
+        }
+
+        function filterCategory(cat) {
+            playSound('flip');
+            activeCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'filter-btn active px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-900 text-white transition-all shadow-sm';
+                } else {
+                    btn.className = 'filter-btn px-3.5 py-1.5 text-xs font-bold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all';
+                }
+            });
+            renderFlashcards();
+        }
+
+        // Hotspot Inspection Handler
+        function inspectHotspot(hotspotKey) {
+            playSound('flip');
+            const data = inspectorHotspots[hotspotKey];
+            if (!data) return;
+
+            document.getElementById('inspectorDetailTitle').textContent = data.title[currentLang];
+            document.getElementById('inspectorDetailBody').innerHTML = data.html[currentLang];
+        }
+
+        // Quiz Renderer
+        function renderQuiz() {
+            const container = document.getElementById('quizBox');
+            if (!container) return;
+            const total = quizQuestions.length;
+            const currentNum = currentQuizIndex + 1;
+            const pct = Math.round((currentQuizIndex / total) * 100);
+
+            document.getElementById('quizProgressBar').style.width = `${pct}%`;
+            document.getElementById('quizPercentText').textContent = `${pct}%`;
+            document.getElementById('quizProgressText').textContent = currentLang === 'en'
+                ? `Question ${currentNum} of ${total}`
+                : `第 ${currentNum} 題 / 共 ${total} 題`;
+
+            if (currentQuizIndex >= total) {
+                // QUIZ COMPLETE - RENDER SCORE CARD
+                document.getElementById('quizProgressBar').style.width = `100%`;
+                document.getElementById('quizPercentText').textContent = `100%`;
+
+                let ratingTitle = '';
+                let ratingClass = '';
+
+                if (score >= 9) {
+                    ratingTitle = currentLang === 'en' ? 'SECURITY EXPERT (EXCELLENT PASS)' : '高階防詐資安專家 (優等通過)';
+                    ratingClass = 'text-emerald-700 bg-emerald-50 border-emerald-300';
+                } else if (score >= 7) {
+                    ratingTitle = currentLang === 'en' ? 'CERTIFIED AUDITOR (STANDARD PASS)' : '合格防詐審核員 (標準通過)';
+                    ratingClass = 'text-indigo-700 bg-indigo-50 border-indigo-300';
+                } else {
+                    ratingTitle = currentLang === 'en' ? 'NEEDS RETRAINING (FAILED)' : '需要重修加強 (未通過)';
+                    ratingClass = 'text-rose-700 bg-rose-50 border-rose-300';
+                }
+
+                container.innerHTML = `
+                    <div class="text-center py-8 space-y-6 bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-inner">
+                        <div class="inline-block p-4 bg-white rounded-full border border-slate-200 shadow-md text-5xl">
+                            ${score >= 7 ? '🏅' : '📚'}
+                        </div>
+
+                        <div class="space-y-2">
+                            <span class="text-xs font-black uppercase tracking-widest px-3.5 py-1.5 rounded-full border ${ratingClass}">
+                                ${score >= 7 ? 'PASSED' : 'NEEDS IMPROVEMENT'}
+                            </span>
+                            <h4 class="text-2xl font-black text-slate-900 mt-2">${currentLang === 'en' ? 'Exam Assessment Completed!' : '防詐實戰檢定測驗完成！'}</h4>
+                            <p class="text-sm text-slate-600 font-bold">
+                                ${currentLang === 'en' ? `Your Final Score: ${score} / 10 Correct Assessments` : `您的最終測驗得分：${score} / 10 題`}
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-white rounded-2xl border border-slate-200 max-w-md mx-auto shadow-sm">
+                            <span class="text-xs text-slate-400 font-extrabold block mb-1">CERTIFICATION RATING</span>
+                            <span class="text-base font-black text-slate-900">${ratingTitle}</span>
+                        </div>
+
+                        <button onclick="window.resetQuiz()" class="px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm rounded-2xl transition-all shadow-lg hover:shadow-xl">
+                            ${currentLang === 'en' ? 'Restart Re-test Exam' : '重新開始檢定測驗'}
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = quizQuestions[currentQuizIndex];
+            container.innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-400">
+                        <span>HARDWARE AUDIT ID: SCN-0${q.id}</span>
+                        <span class="px-2.5 py-0.5 bg-slate-100 rounded text-slate-600 font-bold">SCENARIO TEST</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-2 shadow-sm">
+                        <h4 class="text-base font-extrabold text-slate-900">${q.title[currentLang]}</h4>
+                        <p class="text-sm text-slate-700 leading-relaxed font-medium">${q.desc[currentLang]}</p>
+                    </div>
+
+                    <!-- Options Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1" id="quizButtons">
+                        <button onclick="window.handleAnswer(false)" class="p-4 rounded-2xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-extrabold text-sm flex items-center justify-center space-x-2 transition-all shadow-sm">
+                            <span class="text-lg">✅</span>
+                            <span>${currentLang === 'en' ? 'Genuine (Normal / Safe)' : '正常原廠 (安全無虞)'}</span>
+                        </button>
+                        <button onclick="window.handleAnswer(true)" class="p-4 rounded-2xl border-2 border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 font-extrabold text-sm flex items-center justify-center space-x-2 transition-all shadow-sm">
+                            <span class="text-lg">🚨</span>
+                            <span>${currentLang === 'en' ? 'Compromised (Skimmer / Tampered)' : '遭篡改 / 存在側錄風險'}</span>
+                        </button>
+                    </div>
+
+                    <!-- Instant Feedback -->
+                    <div id="quizFeedback" class="hidden p-5 rounded-2xl border space-y-3 shadow-md">
+                        <div id="feedbackTitle" class="font-extrabold text-sm flex items-center space-x-2"></div>
+                        <p id="feedbackText" class="text-xs text-slate-700 leading-relaxed font-medium"></p>
+                        <button onclick="window.nextQuestion()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold rounded-xl transition-all shadow-sm">
+                            ${currentLang === 'en' ? 'Next Question ➔' : '下一題 ➔'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAnswer(userSelectedCompromised) {
+            const q = quizQuestions[currentQuizIndex];
+            const isCorrect = userSelectedCompromised === q.isCompromised;
+            const btnBox = document.getElementById('quizButtons');
+            const feedback = document.getElementById('quizFeedback');
+            const fTitle = document.getElementById('feedbackTitle');
+            const fText = document.getElementById('feedbackText');
+
+            if (btnBox) btnBox.classList.add('pointer-events-none', 'opacity-40');
+
+            if (isCorrect) {
+                playSound('correct');
+                score++;
+                if (fTitle) {
+                    fTitle.className = 'font-extrabold text-sm text-emerald-700 flex items-center space-x-2';
+                    fTitle.innerHTML = `<span>🎯</span><span>${currentLang === 'en' ? 'Correct Assessment!' : '判斷正確！'}</span>`;
+                }
+            } else {
+                playSound('wrong');
+                if (fTitle) {
+                    fTitle.className = 'font-extrabold text-sm text-rose-700 flex items-center space-x-2';
+                    fTitle.innerHTML = `<span>❌</span><span>${currentLang === 'en' ? 'Incorrect Hazard Assessment' : '判斷錯誤'}</span>`;
+                }
+            }
+
+            if (fText) fText.textContent = q.explanation[currentLang];
+            if (feedback) {
+                feedback.className = `p-5 rounded-2xl border space-y-3 ${isCorrect ? 'bg-emerald-50 border-emerald-300' : 'bg-rose-50 border-rose-300'}`;
+                feedback.classList.remove('hidden');
+            }
+
+            const scoreValElem = document.getElementById('quizScoreVal');
+            if (scoreValElem) scoreValElem.textContent = `${score} / ${quizQuestions.length}`;
+        }
+
+        function nextQuestion() {
+            playSound('flip');
+            currentQuizIndex++;
+            renderQuiz();
+        }
+
+        function resetQuiz() {
+            playSound('flip');
+            currentQuizIndex = 0;
+            score = 0;
+            const scoreValElem = document.getElementById('quizScoreVal');
+            if (scoreValElem) scoreValElem.textContent = `0 / ${quizQuestions.length}`;
+            renderQuiz();
+        }
+
+        // --- TAB SWITCHER ---
+        function switchTab(tabId) {
+            playSound('flip');
+            const tabs = ['flashcards', 'inspector', 'quiz'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`sec-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabId) {
+                    if (sec) sec.classList.remove('hidden');
+                    if (btn) btn.className = 'flex-1 min-w-[170px] py-3.5 px-4 text-xs sm:text-sm font-extrabold rounded-xl transition-all bg-indigo-600 text-white shadow-md flex items-center justify-center space-x-2.5 whitespace-nowrap';
+                } else {
+                    if (sec) sec.classList.add('hidden');
+                    if (btn) btn.className = 'flex-1 min-w-[170px] py-3.5 px-4 text-xs sm:text-sm font-extrabold rounded-xl transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center space-x-2.5 whitespace-nowrap';
+                }
+            });
+        }
+
+        // --- BILINGUAL UI TRANSLATION ---
+        function toggleLanguage() {
+            playSound('flip');
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+
+            // Top Header & Bar
+            document.getElementById('langLabel').textContent = currentLang === 'en' ? '繁體中文' : 'English';
+            document.getElementById('soundLabel').textContent = soundEnabled 
+                ? (currentLang === 'en' ? 'Audio ON' : '音效 開') 
+                : (currentLang === 'en' ? 'Audio OFF' : '音效 關');
+
+            if (currentLang === 'en') {
+                document.getElementById('topBarTag').textContent = 'INTERNAL TRAINING MODULE • ATM FRAUD & HARDWARE TAMPERING AUDIT';
+                document.getElementById('topBarIso').textContent = 'Security Standard: ISO/IEC 27001 Certified';
+                document.getElementById('topBarEdition').textContent = '2026 Updated Field Edition';
+                document.getElementById('appTitle').textContent = 'ATM Skimmer Security Training';
+                document.getElementById('appSubTitle').textContent = 'Internal Staff Hardware Inspection & Verification Portal';
+                
+                document.getElementById('tabLabelFlashcards').textContent = 'Skimmer Flashcards (6 Types)';
+                document.getElementById('tabLabelInspector').textContent = 'Visual ATM Inspector';
+                document.getElementById('tabLabelQuiz').textContent = '10-Scenario Knowledge Exam';
+
+                document.getElementById('filterLabel').textContent = 'Filter:';
+                document.getElementById('flashcardHint').textContent = 'Click card to flip & inspect full SOP details';
+
+                document.getElementById('inspectorBadge').textContent = 'Interactive Inspection Diagram';
+                document.getElementById('inspectorHeaderTitle').textContent = 'ATM Front Console Inspection Map';
+                document.getElementById('inspectorHeaderSub').textContent = 'Click the numbered glowing hotspots to bring up specific inspection SOP instructions.';
+                document.getElementById('screenPrompt').textContent = 'PLEASE INSERT YOUR CARD';
+                document.getElementById('screenSubPrompt').textContent = 'Protect your PIN with hand shield';
+                document.getElementById('labelReaderSlot').textContent = 'CARD SLOT';
+                document.getElementById('labelKeypadSlot').textContent = 'PIN KEYPAD';
+                document.getElementById('labelCashSlot').textContent = 'CASH DISPENSER TRAY';
+                document.getElementById('labelCashSub').textContent = 'Motorized Safety Door';
+                document.getElementById('inspectorDetailTitle').textContent = 'Select an Inspection Hotspot';
+                document.getElementById('inspectorDetailSub').textContent = 'Standard Operating Procedure (SOP) & High-Risk Indicators';
+                document.getElementById('inspectorDefaultText').textContent = 'Click hotspots 1, 2, 3, 4, or 5 on the visual diagram to display specific physical inspection protocols and high-risk skimmer tactics.';
+
+                document.getElementById('quizBadge').textContent = 'Internal Security Certification';
+                document.getElementById('quizTitle').textContent = '10-Scenario Hardware Tampering Exam';
+                document.getElementById('quizScoreLabel').textContent = 'Current Score';
+
+                document.getElementById('footerDisclaimer').textContent = 'Banking Security & Physical ATM Hardware Defense Module • Strictly Confidential for Internal Authorized Staff';
+                document.getElementById('footerSocNotice').textContent = 'Report any suspicious ATM skimmer or hardware anomalies immediately to Security Operations Center (SOC).';
+            } else {
+                document.getElementById('topBarTag').textContent = '內部培訓模組 • ATM 防詐欺與硬體篡改稽核考評';
+                document.getElementById('topBarIso').textContent = '資訊安全標準：ISO/IEC 27001';
+                document.getElementById('topBarEdition').textContent = '2026年最新實體安全修訂版';
+                document.getElementById('appTitle').textContent = 'ATM 側錄器防詐訓練門戶';
+                document.getElementById('appSubTitle').textContent = '銀行從業人員硬體特徵與真偽辨識培訓';
+
+                document.getElementById('tabLabelFlashcards').textContent = '圖解側錄器庫 (6類)';
+                document.getElementById('tabLabelInspector').textContent = '互動式 ATM 實機檢查';
+                document.getElementById('tabLabelQuiz').textContent = '10 題真偽實戰測驗';
+
+                document.getElementById('filterLabel').textContent = '類別篩選：';
+                document.getElementById('flashcardHint').textContent = '點擊卡片翻面檢視安全 SOP 細節';
+
+                document.getElementById('inspectorBadge').textContent = '實體機台稽核地圖';
+                document.getElementById('inspectorHeaderTitle').textContent = 'ATM 機台結構與受攻擊熱點分析';
+                document.getElementById('inspectorHeaderSub').textContent = '點擊發光的紅色數字熱點，查看該區域標準檢查 SOP';
+                document.getElementById('screenPrompt').textContent = '請插入金融卡';
+                document.getElementById('screenSubPrompt').textContent = '按壓密碼時請用手遮擋';
+                document.getElementById('labelReaderSlot').textContent = '插卡口模組';
+                document.getElementById('labelKeypadSlot').textContent = 'EPP 密碼鍵盤';
+                document.getElementById('labelCashSlot').textContent = '吐鈔口金屬遮罩';
+                document.getElementById('labelCashSub').textContent = '電動防篡改吐鈔門';
+                document.getElementById('inspectorDetailTitle').textContent = '請選擇左圖的號碼熱點進行稽核';
+                document.getElementById('inspectorDetailSub').textContent = '實體標準檢查程序 (SOP) 與高風險篡改指標';
+                document.getElementById('inspectorDefaultText').textContent = '點擊左方 ATM 圖示上的數字熱點 (1 至 5)，開啟該區域之標準檢查步驟 SOP 及側錄防禦稽核要點。';
+
+                document.getElementById('quizBadge').textContent = '內部防詐欺能力檢定測驗';
+                document.getElementById('quizTitle').textContent = '10 題 ATM 硬體篡改與側錄特徵實戰測驗';
+                document.getElementById('quizScoreLabel').textContent = '目前得分';
+
+                document.getElementById('footerDisclaimer').textContent = '銀行安全防衛與實體 ATM 網路犯罪防禦培訓模組 • 內部授權人員機密訓練資料';
+                document.getElementById('footerSocNotice').textContent = '如發現可疑 ATM 側錄裝置或機體異狀，請立即通報安全維護中心 (SOC)。';
+            }
+
+            renderFlashcards();
+            renderQuiz();
+        }
+
+        // --- EXPOSE FUNCTIONS TO WINDOW SCOPE ---
+        window.filterCategory = filterCategory;
+        window.inspectHotspot = inspectHotspot;
+        window.flipFlashcard = flipFlashcard;
+        window.handleAnswer = handleAnswer;
+        window.nextQuestion = nextQuestion;
+        window.resetQuiz = resetQuiz;
+        window.switchTab = switchTab;
+        window.toggleSound = toggleSound;
+        window.toggleLanguage = toggleLanguage;
+
+        // --- INIT ON LOAD ---
+        window.onload = function() {
+            renderFlashcards();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
